@@ -173,26 +173,30 @@ function calc() {
     hold.push(value);
     let calcItemsNew = hold.join("");
     setCalcItems(calcItemsNew);
-    if (calcItemsNew.includes("log")) {
-      calcItemsNew = calcItemsNew.replace("log", "log10");
-    } else if (calcItemsNew.includes("ln")) {
-      calcItemsNew = calcItemsNew.replace("ln", "log");
-    } else if (calcItemsNew.includes("√(")) {
-      calcItemsNew = calcItemsNew.replace("√(", "sqrt(");
-    } else if (calcItemsNew.includes("𝜋")) {
-      calcItemsNew = calcItemsNew.replace("𝜋", "pi");
-    } else if (calcItemsNew.includes("sin-1(")) {
-      calcItemsNew = calcItemsNew.replace("sin-1", "asin");
-    } else if (calcItemsNew.includes("cos-1(")) {
-      calcItemsNew = calcItemsNew.replace("cos-1", "acos");
-    } else if (calcItemsNew.includes("tan-1(")) {
-      calcItemsNew = calcItemsNew.replace("tan-1", "atan");
-    } else if (calcItemsNew.includes("×")) {
-      calcItemsNew = calcItemsNew.replace("×", "*");
-    } else if (calcItemsNew.includes("÷")) {
-      calcItemsNew = calcItemsNew.replace("÷", "/");
-    }
+    newFunction();
     setAnswer(math.evaluate(calcItemsNew));
+
+    function newFunction() {
+      if (calcItemsNew.includes("log")) {
+        calcItemsNew = calcItemsNew.replace("log", "log10");
+      } else if (calcItemsNew.includes("ln")) {
+        calcItemsNew = calcItemsNew.replace("ln", "log");
+      } else if (calcItemsNew.includes("√(")) {
+        calcItemsNew = calcItemsNew.replace("√(", "sqrt(");
+      } else if (calcItemsNew.includes("𝜋")) {
+        calcItemsNew = calcItemsNew.replace("𝜋", "pi");
+      } else if (calcItemsNew.includes("sin-1(")) {
+        calcItemsNew = calcItemsNew.replace("sin-1", "asin");
+      } else if (calcItemsNew.includes("cos-1(")) {
+        calcItemsNew = calcItemsNew.replace("cos-1", "acos");
+      } else if (calcItemsNew.includes("tan-1(")) {
+        calcItemsNew = calcItemsNew.replace("tan-1", "atan");
+      } else if (calcItemsNew.includes("×")) {
+        calcItemsNew = calcItemsNew.replace("×", "*");
+      } else if (calcItemsNew.includes("÷")) {
+        calcItemsNew = calcItemsNew.replace("÷", "/");
+      }
+    }
   };
 
   const handleUpdate = (event) => {
@@ -209,9 +213,13 @@ function calc() {
   };
 
   const handleExpression = () => {
-    setCalcItems(answer);
+    let answer2 = answer;
+    if(answer == ""){
+      answer2 = math.evaluate(calcItems);
+    }
+    setCalcItems(answer2);
     setAnswer("");
-    hold = [answer];
+    hold = [answer2];
   };
 
   const handleUpdatePi = (event) => {
@@ -235,7 +243,32 @@ function calc() {
     let popped = hold;
     popped = popped.join("");
     setCalcItems(popped);
-    setAnswer("");
+    console.log(popped.length)
+    if(calcItems.length >= 1){
+      if (popped.includes("log")) {
+        popped = popped.replace("log", "log10");
+      } else if (popped.includes("ln")) {
+        popped = popped.replace("ln", "log");
+      } else if (popped.includes("√(")) {
+        popped = popped.replace("√(", "sqrt(");
+      } else if (popped.includes("𝜋")) {
+        popped = popped.replace("𝜋", "pi");
+      } else if (popped.includes("sin-1(")) {
+        popped = popped.replace("sin-1", "asin");
+      } else if (popped.includes("cos-1(")) {
+        popped = popped.replace("cos-1", "acos");
+      } else if (popped.includes("tan-1(")) {
+        popped = popped.replace("tan-1", "atan");
+      } else if (popped.includes("×")) {
+        popped = popped.replace("×", "*");
+      } else if (popped.includes("÷")) {
+        popped = popped.replace("÷", "/");
+      }
+      setAnswer(math.evaluate(popped));
+      if(popped.length == 0){
+        setAnswer('')
+      }
+    }
   };
 
   const handleAdvanced = (event) => {
@@ -281,8 +314,8 @@ function calc() {
         <Main>
           <CalcDisplay>
             {/* <CalcInput defaultValue={calcItems} onChange={escapeCharacters} onKeyPress={keypresscheck}/> */}
-            <CalcInput value={calcItems} />
-            <CalcExpression value={answer} />
+            <CalcInput disabled value={calcItems} />
+            <CalcExpression readOnly value={answer} />
             <HintDiv>
               <Hint>
                 <span>{hint}</span>
